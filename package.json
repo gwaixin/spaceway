@@ -4,19 +4,22 @@
   "description": "A training for node js that has chat, video call, file transfer, create room and etc",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js"
   },
   "author": "Nichole John Martinez",
   "license": "ISC",
   "dependencies": {
-  	"body-parser": "^1.15.0",
+    "body-parser": "^1.15.0",
     "bootstrap": "^3.3.6",
     "ejs": "^2.4.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
-    "jquery": "^2.2.3"
-  },
-  "scripts": {
-  	"start": "nodemon server.js"
+    "jquery": "^2.2.3",
+    "mysql": "^2.10.2",
+    "pg": "^4.4.3",
+    "pg-hstore": "^2.3.2",
+    "pnotify": "^3.0.0",
+    "sequelize": "^3.12.2",
+    "sequelize-cli": "^2.1.0"
   }
 }
