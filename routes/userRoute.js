@@ -5,19 +5,27 @@ var bodyParser = require('body-parser');
 userRoute.use(bodyParser.urlencoded({extended: true}));
 
 userRoute.get('/account', function(req, res) {
-	res.render('base', {page:'/user/account', title: 'account'});
+	res.render('base', processLocal('/user/account', 'account'));
 });
 
 userRoute.get('/', function(req, res) {
-	res.render('base', {page:'/user/index', title: 'index'});
+	res.render('base', processLocal('/user/index', 'index'));
 });
 
 userRoute.get('/profile', function(req, res) {
-	res.render('base', {page:'/user/profile', title: 'profile'});
+	res.render('base', processLocal('/user/profile', 'profile'));
 });
 
 userRoute.get('/settings', function(req, res) {
-	res.render('base', {page:'/user/settings', title: 'settings'});
+	res.render('base', processLocal('/user/settings',  'settings'));
 });
+
+function processLocal(page, title) {
+	return {
+		page: page,
+		title: title,
+		header: 'userHeader'
+	};
+}
 
 module.exports = userRoute;
