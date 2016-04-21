@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%=title%></title>
+	<!--DEFAULT STYLE-->
+	<!-- <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" href="/css/lib/bootstrap-theme.min.css">
+</head>
+<body>
+	<%if (locals.header) { %>
+		<%- include('pages/' + header) %>
+	<% } else { %>
+		<%- include('partials/header') %>
+	<% } %>
+	<div class="container">
+		<div class="page-header">
+			<div class="row">
+				<br>
+				<%- include('pages/' + page, {test: 'testing'}) %>
+			</div>
+		</div>
+		<%- include('partials/footer') %>
+	</div>
+	<!--DEFAULT SCRIPT-->
+	<script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
