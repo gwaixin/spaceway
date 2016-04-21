@@ -5,19 +5,23 @@ var bodyParser = require('body-parser');
 userRoute.use(bodyParser.urlencoded({extended: true}));
 
 userRoute.get('/account', function(req, res) {
-	res.render('base', processLocal('/user/account', 'account'));
+	res.render('base', processLocal('/user/account', 'User Account'));
 });
 
 userRoute.get('/', function(req, res) {
-	res.render('base', processLocal('/user/index', 'index'));
+	res.render('base', processLocal('/user/index', 'User Dashboard'));
 });
 
 userRoute.get('/profile', function(req, res) {
-	res.render('base', processLocal('/user/profile', 'profile'));
+	res.render('base', processLocal('/user/profile', 'User Profile'));
 });
 
 userRoute.get('/settings', function(req, res) {
-	res.render('base', processLocal('/user/settings',  'settings'));
+	res.render('base', processLocal('/user/settings',  'User Settings'));
+});
+
+userRoute.get('/contacts', function(req, res) {
+	res.render('base', processLocal('/user/contacts', 'User Contacts'))
 });
 
 function processLocal(page, title) {
