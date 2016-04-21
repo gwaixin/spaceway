@@ -1,0 +1,22 @@
+{
+  "name": "spaceway",
+  "version": "1.0.0",
+  "description": "A training for node js that has chat, video call, file transfer, create room and etc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nichole John Martinez",
+  "license": "ISC",
+  "dependencies": {
+  	"body-parser": "^1.15.0",
+    "bootstrap": "^3.3.6",
+    "ejs": "^2.4.1",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "jquery": "^2.2.3"
+  },
+  "scripts": {
+  	"start": "nodemon server.js"
+  }
+}
