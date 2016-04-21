@@ -4,8 +4,10 @@ require('./config/server');
 
 // Routes
 var authRoute = require('./routes/authRoute');
+var userRoute = require('./routes/userRoute');
 
 app.use('/auth/', authRoute);
+app.use('/user/', userRoute);
 
 
 // Set view engine
