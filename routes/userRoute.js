@@ -24,6 +24,10 @@ userRoute.get('/contacts', function(req, res) {
 	res.render('base', processLocal('/user/contacts', 'User Contacts'))
 });
 
+userRoute.get('/chat', function(req, res) {
+	res.render('base', processLocal('/user/chat', 'Chatting'))
+});
+
 function processLocal(page, title) {
 	return {
 		page: page,
