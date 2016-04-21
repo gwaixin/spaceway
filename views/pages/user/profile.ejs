@@ -1,1 +1,51 @@
-
+<div class="col-lg-12">
+	<h2>Profile</h2>
+</div>
+<div class="col-lg-12">
+	<div class="row">
+		<div class="col-lg-3">
+			<input type="file" id='picture' name='picture'>
+			<img src="http://placehold.it/250x150" alt="profile" id="profile" class="thumbnail preview">
+			<button class="btn btn-primary btn-xs">save new profile</button>
+		</div>
+		<div class="col-lg-9">
+			<form action="/user/profile" class="form-horizontal">
+				<div class="form-group">
+					<label for="firstname" class="control-label col-lg-2">First Name</label>
+					<div class="col-lg-9">
+						<input type="text" name="firstname" id="firstname" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="lastname" class="control-label col-lg-2">Last Name</label>
+					<div class="col-lg-9">
+						<input type="text" name="lastname" id="lastname" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="birthdate" class="control-label col-lg-2">Birthdate</label>
+					<div class="col-lg-9">
+						<input type="date" name="birthdate" id="birthdate" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="address" class="control-label col-lg-2">Address</label>
+					<div class="col-lg-9">
+						<input type="text" name="address" id="address" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="gender" class="control-label col-lg-2">Gender</label>
+					<div class="col-lg-9">
+						<input type="text" name="gender" id="gender" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-9 col-lg-offset-2">
+						<button class="btn btn-lg btn-primary">Update Profile</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
