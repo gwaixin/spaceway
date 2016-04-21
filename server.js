@@ -2,6 +2,12 @@ var express = require('express');
 var app = express();
 require('./config/server');
 
+// Routes
+var authRoute = require('./routes/authRoute');
+
+app.use('/auth/', authRoute);
+
+
 // Set view engine
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
