@@ -1,5 +1,6 @@
 var express = require('express');
 var userRoute = express.Router();
+var chatRoute = require('./chatRoute');
 var bodyParser = require('body-parser');
 
 userRoute.use(bodyParser.urlencoded({extended: true}));
@@ -24,9 +25,7 @@ userRoute.get('/contacts', function(req, res) {
 	res.render('base', processLocal('/user/contacts', 'User Contacts'))
 });
 
-userRoute.get('/chat', function(req, res) {
-	res.render('base', processLocal('/user/chat', 'Chatting'))
-});
+userRoute.use('/chat', chatRoute);
 
 function processLocal(page, title) {
 	return {
