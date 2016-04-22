@@ -17,6 +17,15 @@
 		<div class="page-header">
 			<div class="row">
 				<br>
+				<div class="col-lg-12">
+					<%if (locals.errors) { %>
+					<div class="alert alert-danger">
+						<% errors.forEach(function(error) { %>
+						<p>• <%=error.message%></p>
+						<% }) %>
+					</div>
+					<% } %>
+				</div>
 				<%- include('pages/' + page, {test: 'testing'}) %>
 			</div>
 		</div>
