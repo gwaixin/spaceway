@@ -12,10 +12,10 @@ authRoute.get('/login', function(req, res) {
 
 authRoute.post('/login', function(req, res) {
 	models.User.findOne({where:{username: req.body.username}}).then(function(user) {
-		if (user.comparePassword(user, req.body.password)) {
+		if (user && user.comparePassword(user, req.body.password)) {
 			res.send('saktopassword');
 		} else {
-			res.send('failangpassword');
+			res.render('base', { page: '/auth/login', title: 'Login', errors: [{message: 'Username and password does not match. please try again.'}]});
 		}
 	});
 });
@@ -25,7 +25,7 @@ authRoute.get('/logout', function(req, res) {
 });
 
 authRoute.get('/register', function(req, res) {
-	res.render('base', { page: '/auth/register', title: 'Register'});
+	res.render('base', {reqBody: {}, page: '/auth/register', title: 'Register'});
 });
 
 authRoute.post('/register', function(req, res) {
@@ -38,7 +38,8 @@ authRoute.post('/register', function(req, res) {
 	}).then(function(user) {
 		res.redirect('/auth/register_complete');
 	}).catch(function(error) {
-		res.send(error);
+		console.log(error);
+		res.render('base', {reqBody: req.body, page: '/auth/register', title: 'Register', errors: error.errors});
 	});
 });
 
