@@ -5,3 +5,12 @@ global.siteDescription = 'SpaceWay for blah blah blah Lorem ipsum dolor sit amet
 global.siteCopy = 'Copyright © '+siteTitle+' 2015';
 global.authorName = 'Nichole John Martinez';
 global.authorContact = 'xinmartinez@gmail.com';
+
+module.exports = {
+	'session': {
+		secret: 'spacewaytttteeeeedeeeert',
+		cookie: {maxAge: 3600000},
+		resave: true,
+		saveUninitialized: true
+	}
+};

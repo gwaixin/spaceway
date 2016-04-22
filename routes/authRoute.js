@@ -6,14 +6,24 @@ var Sequelize = require('sequelize');
 
 authRoute.use(bodyParser.urlencoded({ extended: true }));
 
-authRoute.get('/login', function(req, res) {
+// Middleware for alreadyLogin
+var isLogin = function(req, res, next) {
+	if (req.session.authUser) {
+		res.redirect('/user/');
+	} else {
+		next();
+	}
+}
+
+authRoute.get('/login', isLogin, function(req, res) {
 	res.render('base', { page: '/auth/login', title: 'Login'});
 });
 
-authRoute.post('/login', function(req, res) {
+authRoute.post('/login', isLogin, function(req, res) {
 	models.User.findOne({where:{username: req.body.username}}).then(function(user) {
 		if (user && user.comparePassword(user, req.body.password)) {
-			res.send('saktopassword');
+			req.session.authUser = user;
+			res.redirect('/user/');
 		} else {
 			res.render('base', { page: '/auth/login', title: 'Login', errors: [{message: 'Username and password does not match. please try again.'}]});
 		}
@@ -21,14 +31,15 @@ authRoute.post('/login', function(req, res) {
 });
 
 authRoute.get('/logout', function(req, res) {
+	delete req.session.authUser;
 	res.render('base', { page: '/auth/logout', title: 'Logout'});
 });
 
-authRoute.get('/register', function(req, res) {
+authRoute.get('/register', isLogin, function(req, res) {
 	res.render('base', {reqBody: {}, page: '/auth/register', title: 'Register'});
 });
 
-authRoute.post('/register', function(req, res) {
+authRoute.post('/register', isLogin, function(req, res) {
 	models.User.create({
 		username: req.body.username,
     password: req.body.password,
@@ -43,7 +54,7 @@ authRoute.post('/register', function(req, res) {
 	});
 });
 
-authRoute.get('/register_complete', function(req, res) {
+authRoute.get('/register_complete', isLogin, function(req, res) {
 	res.render('base', { page: '/auth/register_complete', title: 'Register Complete'});
 });
 
