@@ -6,6 +6,7 @@
 	<!--DEFAULT STYLE-->
 	<!-- <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" href="/css/lib/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
 	<%if (locals.header) { %>
@@ -13,7 +14,7 @@
 	<% } else { %>
 		<%- include('partials/header') %>
 	<% } %>
-	<div class="container">
+	<div class="<%= locals.confluid ? 'container-fluid' : 'container' %>">
 		<div class="page-header">
 			<div class="row">
 				<br>
@@ -34,5 +35,11 @@
 	<!--DEFAULT SCRIPT-->
 	<script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+	<!--PAGE SCRIPT -->
+	<% if (locals.js) { %>
+		<% locals.js.forEach(function(script) { %>
+	<script type="text/javascript" src="<%=script.src%>"></script>
+		<% }) %>
+	<% } %>
 </body>
 </html>
