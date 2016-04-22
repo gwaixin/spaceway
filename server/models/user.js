@@ -4,18 +4,39 @@ var crypto = require('crypto'),
     password = 'd6F3Efeq';
 module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define('User', {
-    username: DataTypes.STRING,
-    password: DataTypes.STRING,
+    username: { 
+      type: DataTypes.STRING,
+      validate: {len: {args:[6, 30], msg: "Username must be atleast minimum of 6 characters"}}
+    },
+    password: { 
+      type: DataTypes.STRING,
+      validate: {len: {args:[6, 30], msg: "Password must be atleast minimum of 6 characters"}}
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {isEmail: true}
+      validate: {isEmail: { msg: "Invalid email format"}}
     },
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    birthdate: DataTypes.DATE,
+    first_name: { 
+      type: DataTypes.STRING,
+      validate: {len: {args:[2, 30], msg: "First Name must be atleast minimum of 2 characters"}}
+    },
+    last_name: { 
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {len: {args:[6, 30], msg: "Last Name must be atleast minimum of 6 characters"}}
+    },
+    birthdate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      validate: {isDate: {msg: "Invalid date format"}}
+    },
     address: DataTypes.STRING,
-    gender: DataTypes.STRING,
+    gender: { 
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {is:{args:[".*?((?:fe)?male).*"], msg: "Invalid Gender Type"}}
+    },
     status: DataTypes.BOOLEAN
   }, {
     classMethods: {
@@ -30,11 +51,11 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, { 
     validate: {
-      bothCoordsOrNone: function() {
-        if ((this.latitude === null) !== (this.longitude === null)) {
-          throw new Error('Require either both latitude and longitude or neither')
-        }
-      }
+      // isEmail: function() {
+      //   if (this.email == null) {
+      //     throw new Error('Require either both latitude and longitude or neither')
+      //   }
+      // }
     }
   });
 
