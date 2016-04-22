@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var app = express();
 var serverConf = require('./config/server');
+var model = require('./server/models/');
 
 // Set Session
 app.use(session(serverConf.session));
@@ -26,7 +27,9 @@ var userRoute = require('./routes/userRoute');
 
 // Check Authentication
 var checkAuth = function(req, res, next) {
+	// next();
 	if (req.session.authUser) {
+		res.locals.firstname = req.session.authUser.first_name;
 		next();
 	} else {
 		res.redirect('/auth/login');
@@ -35,9 +38,47 @@ var checkAuth = function(req, res, next) {
 
 app.use('/auth/', authRoute);
 app.use('/user/', checkAuth, userRoute);
+// app.use('/user/', userRoute);
 
 // Prepare for io
 var http = require('http').Server(app);
+var io = require('socket.io')(http);
+// var Room = require('./server/socket/room');
+
+var people = {};
+// var rooms = {};
+// var clients = [];
+// var roomID;
+
+io.on('connection', function(client) {
+	// io.emit('online add', {row: 'new user'});
+	client.on('disconnect', function() { // On Disconnect
+		console.log('user has disconnected');
+		// updateChatStatus(people[client.id].userid, false);
+		delete people[client.id];
+		io.emit('chat leave', people);
+	});
+
+	client.on('chat join', function(user) {
+		// updateChatStatus(user.id, true);
+		people[client.id] = {firstname: user.firstname, userid: user.id, clientid: client.id};
+		io.emit('chat join', people);
+	});
+});
+
+function updateChatStatus(userId, status) {
+	model.User.findById(userId).then(function(user) {
+		if (user) {
+			user.updateAttributes({
+				is_chat : status
+			}).then(function(data) {
+				console.log('User is_chat updated to : ' + status);
+			});
+		} else {
+			console.log('User not found, invalid user id');
+		}
+	});
+}
 
 http.listen(3030, function() {
 	console.log('Example app listening on port 3030!');
