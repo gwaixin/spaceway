@@ -5,27 +5,27 @@
 	<form method="POST" action="/auth/register" class="form-horizontal">
 		<div class="form-group"><label for="firstname" class="control-label col-lg-2">Firstname</label>
 			<div class="col-lg-8">
-				<input type="text" id="firstname" name="firstname" class="form-control">
+				<input type="text" id="firstname" value="<%=reqBody.firstname%>" name="firstname" class="form-control">
 			</div>
 		</div>
 		<div class="form-group"><label for="username" class="control-label col-lg-2">Username</label>
 			<div class="col-lg-8">
-				<input type="text" id="username" name="username" class="form-control">
+				<input type="text" id="username" value="<%=reqBody.username%>" name="username" class="form-control">
 			</div>
 		</div>
 		<div class="form-group"><label for="password" class="control-label col-lg-2">Password</label>
 			<div class="col-lg-8">
-				<input type="password" id="password" name="password" class="form-control">
+				<input type="password" id="password" value="<%=reqBody.password%>" name="password" class="form-control">
 			</div>
 		</div>
 		<div class="form-group"><label for="password_confirm" class="control-label col-lg-2">Password Confirm</label>
 			<div class="col-lg-8">
-				<input type="password" id="password_confirm" name="password_confirm" class="form-control">
+				<input type="password" id="password_confirm" value="<%=reqBody.password_confirm%>" name="password_confirm" class="form-control">
 			</div>
 		</div>
 		<div class="form-group"><label for="email" class="control-label col-lg-2">Email</label>
 			<div class="col-lg-8">
-				<input type="text" id="email" name="email" class="form-control">
+				<input type="text" id="email" value="<%=reqBody.email%>" name="email" class="form-control">
 			</div>
 		</div>
 		<div class="form-group">
