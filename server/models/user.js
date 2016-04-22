@@ -37,7 +37,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       validate: {is:{args:[".*?((?:fe)?male).*"], msg: "Invalid Gender Type"}}
     },
-    status: DataTypes.BOOLEAN
+    status: DataTypes.BOOLEAN,
+    is_chat: DataTypes.BOOLEAN
   }, {
     classMethods: {
       associate: function(models) {
