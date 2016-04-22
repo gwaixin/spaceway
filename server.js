@@ -3,6 +3,7 @@ var session = require('express-session');
 var app = express();
 var serverConf = require('./config/server');
 var model = require('./server/models/');
+var crypto = require('crypto');
 
 // Set Session
 app.use(session(serverConf.session));
@@ -55,15 +56,47 @@ io.on('connection', function(client) {
 	client.on('disconnect', function() { // On Disconnect
 		console.log('user has disconnected');
 		// updateChatStatus(people[client.id].userid, false);
-		delete people[client.id];
+		delete people[client.userid];
 		io.emit('chat leave', people);
 	});
 
 	client.on('chat join', function(user) {
 		// updateChatStatus(user.id, true);
-		people[client.id] = {firstname: user.firstname, userid: user.id, clientid: client.id};
+		people[user.id] = {firstname: user.firstname, userid: user.id, clientid: client.id};
+		client.userid = user.id;
 		io.emit('chat join', people);
 	});
+
+	client.on('chat send', function(chat) {
+		console.log('testing chat send', client.room);
+		io.to(client.room).emit('chat sent', {body: chat.body});
+	});
+
+	client.on('chat private', function(data) {
+		console.log('chat private');
+		var roomid = "";
+		if (typeof people[client.userid].room === 'undefined') {
+			var chatTo = people[data.to.id];
+			if (
+				typeof chatTo.room != 'undefined' &&
+				chatTo.room.with == client.userid
+			) {
+				console.log('ni copy og chatTo room');
+				// copy roomid of the other person
+				people[client.userid].room = chatTo.room;
+				roomid = chatTo.room.id;
+			} else { // create new room
+				roomid = crypto.randomBytes(32).toString('hex');
+				people[client.userid].room = {id: roomid};
+				// console.log('create room', roomid);
+			}
+		}
+		people[client.userid].room.with = data.to.id; // change talk with someone
+		client.room = roomid;
+		client.join(roomid);
+		client.emit('chat private', {roomid: roomid});
+	});
+
 });
 
 function updateChatStatus(userId, status) {
