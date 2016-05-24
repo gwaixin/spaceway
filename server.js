@@ -69,7 +69,7 @@ io.on('connection', function(client) {
 
 	client.on('chat send', function(chat) {
 		console.log('testing chat send', client.room);
-		io.to(client.room).emit('chat sent', {body: chat.body});
+		io.to(client.room).emit('chat sent', {body: chat.body, from:chat.from});
 	});
 
 	client.on('chat private', function(data) {

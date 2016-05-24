@@ -1,7 +1,7 @@
 var socket;
-
+var userid;
 $(document).ready(function() {
-	
+	userid = $('#user-id').val();
 	socket = io();
 
 	$('#add-online').click(function() {
@@ -10,8 +10,9 @@ $(document).ready(function() {
 		});
 	});
 
+
 	socket.emit('chat join', {
-		id: $('#user-id').val(),
+		id: userid,
 		firstname: $('#user-firstname').val()
 	});
 
@@ -42,6 +43,7 @@ $(document).ready(function() {
 		var body = $('.chat-body').val();
 		if (userinfo && body != '') {
 			socket.emit('chat send', {
+				from: userid,
 				body: body,
 				to: userinfo
 			});
@@ -56,8 +58,19 @@ $(document).ready(function() {
 
 	socket.on('chat sent', function(chat) {
 		console.log('testing chat sent');
-		$('.chat-conversation').append(chat.body);
+		$('.chat-conversation').append(formatChat(chat.body, chat.from));
 	});
+
+	function formatChat(body, from) {
+		var chatFrom = from == userid ? 'ME' : userinfo.firstname;
+		var newChat = "<div class='row'><div class='col-lg-2'><h2>" +chatFrom+ "</h2></div><div class='col-lg-10'>" +
+						"<blockquote>" +
+						  "<p>"+ body +"</p>" +
+						  "<small>"+ Date.now() +"</small>" +
+						"</blockquote></div></div>";
+
+		return newChat;
+	}
 
 });
 var userinfo = {};
@@ -69,7 +82,7 @@ $(document).on('click', '.online-chat', function() {
 		clientid: $(this).data('clientid')
 	};
 
-	socket.emit('chat private', {to: userinfo, from: $('#user-id').val()});
+	socket.emit('chat private', {to: userinfo, from: userid});
 	
 	$('.chat-title').text(userinfo.firstname);
 	$('.chat-body').html('');
