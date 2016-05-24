@@ -9,6 +9,7 @@
   "author": "Nichole John Martinez",
   "license": "ISC",
   "dependencies": {
+    "angular": "^1.5.5",
     "body-parser": "^1.15.0",
     "bootstrap": "^3.3.6",
     "crypto": "0.0.3",
