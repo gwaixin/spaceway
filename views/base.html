@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="spaceway-app">
 <head>
 	<meta charset="UTF-8">
 	<title><%=title%></title>
@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="/css/lib/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="/css/common.css">
 </head>
-<body>
+<body ng-cloak>
 	<%if (locals.header) { %>
 		<%- include('partials/' + header) %>
 	<% } else { %>
@@ -35,11 +35,13 @@
 	<!--DEFAULT SCRIPT-->
 	<script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/angular/angular.min.js"></script>
 	<script type="text/javascript" src="/js/common.js"></script>
+	<script type="text/javascript" src="/js/ng/app.js"></script>
 	<!--PAGE SCRIPT -->
 	<% if (locals.js) { %>
 		<% locals.js.forEach(function(script) { %>
-	<script type="text/javascript" src="<%=script.src%>"></script>
+	<script type="text/javascript" src="<%=script%>"></script>
 		<% }) %>
 	<% } %>
 </body>
