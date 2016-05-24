@@ -72,7 +72,11 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 
 			$s.socket.on('chat sent', function(chat) {
 				$s.$apply(function() {
-					$s.bodyMessage.push(chat);
+					var message = {
+						body: chat.body,
+						from: $s.user.id === chat.from.id ? 'ME' : chat.from.name
+					};
+					$s.bodyMessage.push(message);
 				});
 			});
 
