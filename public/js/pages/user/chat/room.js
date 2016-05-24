@@ -28,7 +28,8 @@ $(document).ready(function() {
 		var ol = [];
 		$('#chat-online-list').html('');
 		for (var id in people) {
-			if (!inArray(people[id].userid, ol)) {
+			console.log(userid);
+			if (!inArray(people[id].userid, ol) && people[id].userid !== userid) {
 				ol.push(people[id].userid);
 				var newOnline = "<a href='#' class='list-group-item online-chat' "+
 												"data-clientid='"+people[id].clientid+"' "+
@@ -41,7 +42,7 @@ $(document).ready(function() {
 
 	$('.chat-send').click(function() {
 		var body = $('.chat-body').val();
-		if (userinfo && body != '') {
+		if (userinfo && body !== '') {
 			socket.emit('chat send', {
 				from: userid,
 				body: body,
@@ -63,7 +64,7 @@ $(document).ready(function() {
 
 	function formatChat(body, from) {
 		var chatFrom = from == userid ? 'ME' : userinfo.firstname;
-		var newChat = "<div class='row'><div class='col-lg-2'><h2>" +chatFrom+ "</h2></div><div class='col-lg-10'>" +
+		var newChat = "<div class='row'><div class='col-lg-1'><h4>" +chatFrom+ "</h4></div><div class='col-lg-10'>" +
 						"<blockquote>" +
 						  "<p>"+ body +"</p>" +
 						  "<small>"+ Date.now() +"</small>" +
