@@ -9,3 +9,12 @@ function inArray(needle, haystack) {
   }
   return false;
 }
+
+function isObjectExist(obj, fromObjects) {
+	for (var i = 0; i < fromObjects.length; i++) {
+		if (JSON.stringify(obj) === JSON.stringify(fromObjects[i])) {
+			return true;
+		}
+	}
+	return false;
+}
