@@ -5,9 +5,12 @@ var bodyParser = require('body-parser');
 chatRoute.use(bodyParser.urlencoded({extended: true}));
 
 chatRoute.get('/', function(req, res) {
-	var locals = processLocal('/user/chat', 'Chatting');
+	var locals = processLocal('/user/chat', 'Chatting 2');
 	locals.confluid = true;
-	locals.js = [{src: '/js/pages/user/chat/room.js'}, {src: '/js/socket.io/socket.io.js'}];
+	locals.js = [
+		'/js/ng/controller/chat.js',
+		'/js/socket.io/socket.io.js'
+	];
 	locals.user = req.session.authUser
 	res.render('base', locals)
 });
