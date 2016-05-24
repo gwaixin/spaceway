@@ -77,25 +77,32 @@ io.on('connection', function(client) {
 	});
 
 	client.on('chat private', function(data) {
-		console.log('chat private');
+		console.log('chat private : ');
 		var roomid = "";
-		var chatTo = people[data.to.userid];
+		// reset client room
+		if (typeof people[data.from].room != 'undefined') {
+			client.leave(people[data.from].room.id);
+		}
 		if (
-			typeof chatTo.room != 'undefined' &&
-			chatTo.room.with == client.userid
+			typeof  people[data.to.userid].room != 'undefined' &&
+			Number( people[data.to.userid].room.with) == Number(data.from)
 		) {
 			// copy roomid of the other person
-			console.log(client.userid + ' is joining room with user # ' + data.to.userid );
-			roomid = chatTo.room.id;
-			people[client.userid].room = chatTo.room;
+			console.log(data.from + ' is joining room with user # ' + data.to.userid );
+			roomid =  people[data.to.userid].room.id;
+			people[data.from].room =  {
+				id: roomid,
+				with: data.to.userid
+			};
 		} else { 
 			// create new room
-			console.log(client.userid + ' creates new room with', chatTo.userid);
-			console.log(people[data.to.userid]);
+			console.log(data.from + ' creates new room with',  people[data.to.userid].userid);
 			roomid = createRoomId();
-			people[client.userid].room = {id: roomid};
+			people[data.from].room = {
+				id: roomid,
+				with: data.to.userid
+			};
 		}
-		people[client.userid].room.with = data.to.userid; // change talk with someone
 		client.room = roomid;
 		client.join(roomid);
 		client.emit('chat private', {roomid: roomid});
