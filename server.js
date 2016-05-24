@@ -69,14 +69,14 @@ io.on('connection', function(client) {
 
 	client.on('chat send', function(chat) {
 		console.log('testing chat send', client.room);
-		io.to(client.room).emit('chat sent', {body: chat.body, from:chat.from});
+		io.to(client.room).emit('chat sent', {body: chat.body, from:chat.from.name});
 	});
 
 	client.on('chat private', function(data) {
 		console.log('chat private');
 		var roomid = "";
 		if (typeof people[client.userid].room === 'undefined') {
-			var chatTo = people[data.to.id];
+			var chatTo = people[data.to.userid];
 			if (
 				typeof chatTo.room != 'undefined' &&
 				chatTo.room.with == client.userid
@@ -91,7 +91,7 @@ io.on('connection', function(client) {
 				// console.log('create room', roomid);
 			}
 		}
-		people[client.userid].room.with = data.to.id; // change talk with someone
+		people[client.userid].room.with = data.to.userid; // change talk with someone
 		client.room = roomid;
 		client.join(roomid);
 		client.emit('chat private', {roomid: roomid});
