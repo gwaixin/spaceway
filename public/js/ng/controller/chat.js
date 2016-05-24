@@ -18,7 +18,7 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 			$s.bodyMessage = [];
 			$('.chat-title').text($s.toPerson.firstname);
 			$('.chat-body').html('');
-			$s.socket.emit('chat private', {to: $s.toPerson, from: $s.user.id});
+			$s.socket.emit('chat private', {to: person, from: $s.user.id});
 		};
 
 		/* On send chat to a person */

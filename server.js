@@ -68,36 +68,39 @@ io.on('connection', function(client) {
 	});
 
 	client.on('chat send', function(chat) {
-		console.log('testing chat send', client.room);
+		// console.log('testing chat send', client.room);
 		io.to(client.room).emit('chat sent', {body: chat.body, from:chat.from.name});
 	});
 
 	client.on('chat private', function(data) {
 		console.log('chat private');
 		var roomid = "";
-		if (typeof people[client.userid].room === 'undefined') {
-			var chatTo = people[data.to.userid];
-			if (
-				typeof chatTo.room != 'undefined' &&
-				chatTo.room.with == client.userid
-			) {
-				console.log('ni copy og chatTo room');
-				// copy roomid of the other person
-				people[client.userid].room = chatTo.room;
-				roomid = chatTo.room.id;
-			} else { // create new room
-				roomid = crypto.randomBytes(32).toString('hex');
-				people[client.userid].room = {id: roomid};
-				// console.log('create room', roomid);
-			}
+		var chatTo = people[data.to.userid];
+		if (
+			typeof chatTo.room != 'undefined' &&
+			chatTo.room.with == client.userid
+		) {
+			// copy roomid of the other person
+			console.log(client.userid + ' is joining room with user # ' + data.to.userid );
+			roomid = chatTo.room.id;
+			people[client.userid].room = chatTo.room;
+		} else { 
+			// create new room
+			console.log(client.userid + ' creates new room with', chatTo.userid);
+			console.log(people[data.to.userid]);
+			roomid = createRoomId();
+			people[client.userid].room = {id: roomid};
 		}
 		people[client.userid].room.with = data.to.userid; // change talk with someone
 		client.room = roomid;
 		client.join(roomid);
 		client.emit('chat private', {roomid: roomid});
 	});
-
 });
+
+function createRoomId() {
+	return  crypto.randomBytes(32).toString('hex');
+}
 
 function updateChatStatus(userId, status) {
 	model.User.findById(userId).then(function(user) {
