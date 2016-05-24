@@ -1,12 +1,15 @@
 # spaceway
+Practicing socket io using node js with express js + angular
 
-# install modules
+# Steps in installing
+
+#### 1. install modules
 npm install
 
-# change database in /server/config.json
+#### 2. change database in /server/config.json
 
-# create database by
+#### 3. create tables by
 node_modules/.bin/sequelize db:migrate
 
-# start server
+#### 4. start server
 npm start
