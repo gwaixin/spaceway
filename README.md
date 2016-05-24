@@ -1,4 +1,9 @@
 # spaceway
 
+# install modules
+npm install
 
-please visit http://mherman.org/blog/2015/10/22/node-postgres-sequelize/#.V0PR__l96M-
+# change database in /server/config.json
+
+# create database by
+node_modules/.bin/sequelize db:migrate
