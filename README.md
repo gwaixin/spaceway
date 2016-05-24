@@ -7,3 +7,6 @@ npm install
 
 # create database by
 node_modules/.bin/sequelize db:migrate
+
+# start server
+npm start
