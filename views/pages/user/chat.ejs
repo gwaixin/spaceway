@@ -18,7 +18,7 @@
 	<div class="col-md-9">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-				<span class="chat-title">Name of the person Loooool2</span>
+				<span class="chat-title">Please choose some to send chat</span>
 				<div class="pull-right">
 					<a href="#" class='chat-video'>video</a> | 
 					<a href="#" class='chat-delete'>delete</a>
@@ -28,23 +28,23 @@
 				<div class="row">
 					<div style="height: 450px;" class="col-md-12 chat-conversation">
 						<div class='row' ng-repeat="(key, message) in bodyMessage">
-							<div class='col-lg-1'>
+							<div class='col-md-1 {{message.position}}'>
 								<h4>{{message.from}}</h4>
 							</div>
-							<div class='col-lg-10'> 
-								<blockquote> 
-									<p>{{message.body}}</p>
-									<small>Date.now()</small>
-								</blockquote>
+							<div class='col-md-10 pull-{{message.position}} text-{{message.position}}'> 
+								<div class="bubble">
+									<p>"{{message.body}}"</p>
+									<span>-</span> <small>{{message.date | date:'medium'}}</small>
+								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col-sm-10">
-						<textarea class="chat-body form-control" rows="2" ng-model="body">
+						<textarea class="chat-body form-control" rows="2" ng-model="body" ng-disabled="isChatDisable" ng-enter-key>
 						</textarea>
 					</div>
 					<div class="col-sm-2">
-						<button type="submit" ng-click="sendChat()" class="btn btn-lg col-xs-12 btn-primary chat-send">SEND</button>
+						<button type="submit" ng-click="sendChat()" class="btn btn-lg col-xs-12 btn-primary chat-send" ng-disabled="isChatDisable">SEND</button>
 					</div>
 				</div>
 			</div>

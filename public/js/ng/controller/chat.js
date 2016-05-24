@@ -18,7 +18,9 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 			$s.bodyMessage = [];
 			$('.chat-title').text($s.toPerson.firstname);
 			$('.chat-body').html('');
+			$('.chat-body').focus();
 			$s.socket.emit('chat private', {to: person, from: $s.user.id});
+			$s.isChatDisable = false;
 		};
 
 		/* On send chat to a person */
@@ -46,6 +48,7 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 			$s.toPerson = {};
 			$s.body = "";
 			$s.bodyMessage = [];
+			$s.isChatDisable = true;
 		};
 
 		// initiate chat
@@ -72,9 +75,12 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 
 			$s.socket.on('chat sent', function(chat) {
 				$s.$apply(function() {
-					var message = {
+					var isSender = $s.user.id === chat.from.id;
+					var message  = {
 						body: chat.body,
-						from: $s.user.id === chat.from.id ? 'ME' : chat.from.name
+						from: isSender ? '' : chat.from.name,
+						position: isSender ? 'right' : 'left',
+						date: Date.now()
 					};
 					$s.bodyMessage.push(message);
 				});
@@ -103,4 +109,18 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 		$s.init();
 		
 	}
-]);
+]).directive('ngEnterKey', function() {
+	return function(scope, element, attrs) {
+		element.bind("keydown keypress", function(event) {
+			var keyCode = event.which || event.keyCode;
+
+			// If enter key is pressed
+			if (keyCode === 13 && !event.shiftKey) {
+				scope.$apply(function() {
+					scope.sendChat();
+				});
+				event.preventDefault();
+			}
+		});
+	};
+});

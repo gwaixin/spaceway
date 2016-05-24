@@ -8,3 +8,11 @@
 	overflow-y: auto;
 	overflow-x:hidden;
 }
+
+.chat-conversation .bubble {
+	background-color: #2FA4E7;
+	border-radius: 1rem 1rem;
+	border: 1px solid #F5F5F5;
+	padding: 1.5rem;
+	color: #fff;
+}
