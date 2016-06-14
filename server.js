@@ -58,11 +58,17 @@ io.on('connection', function(client) {
 		// updateChatStatus(people[client.id].userid, false);
 		delete people[client.userid];
 		io.emit('chat leave', people);
+		io.to(client.room).emit('chat disconnect');
 	});
 
 	client.on('chat join', function(user) {
 		// updateChatStatus(user.id, true);
-		people[user.id] = {firstname: user.firstname, userid: user.id, clientid: client.id};
+		people[user.id] = {
+			firstname: user.firstname,
+			userid: user.id,
+			clientid: client.id,
+			peerid: user.peerid
+		};
 		client.userid = user.id;
 		io.emit('chat join', people);
 	});
@@ -94,6 +100,7 @@ io.on('connection', function(client) {
 				id: roomid,
 				with: data.to.userid
 			};
+			client.broadcast.to(people[data.to.userid].clientid).emit('peer connected', data.from);
 		} else { 
 			// create new room
 			console.log(data.from + ' creates new room with',  people[data.to.userid].userid);
@@ -105,7 +112,7 @@ io.on('connection', function(client) {
 		}
 		client.room = roomid;
 		client.join(roomid);
-		client.emit('chat private', {roomid: roomid});
+		client.emit('chat private', {roomid: roomid, to: data.to.userid});
 	});
 });
 
@@ -127,6 +134,30 @@ function updateChatStatus(userId, status) {
 	});
 }
 
+
+// for peer settings
+var fs = require('fs');
+var peerApp = express();
+var peerServer = require('https').createServer({
+  key: fs.readFileSync('ssl/gl_wildcard.nativecamp.net_2016.nopass.key'),
+  cert: fs.readFileSync('ssl/gl_wildcard.nativecamp.net_2016.crt'),
+  ca: fs.readFileSync('ssl/gl_wildcard.nativecamp.net_2016.chain')
+}, peerApp);
+var peer       = require("peer").ExpressPeerServer;
+
+peerApp.use('/peerjs', peer(peerServer, {debug: true}));
+peerServer.listen(3050, function() {
+	console.log("Peer app listening on port 3050");
+});
+
+peerServer.on('connection', function(id) {
+	console.log('peer connection id : ' + id);
+});
+
+peerServer.on('disconnect', function(id) {
+	console.log('peer disconnected id: ' + id);
+});
+
 http.listen(3030, function() {
-	console.log('Example app listening on port 3030!');
+	console.log('Spaceway app listening on port 3030!');
 });

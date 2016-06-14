@@ -6,8 +6,8 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 
 		$s.init = function() {
 			c.initilized();
-			$s.user.id = $('#user-id').val();
-			$s.user.name = $('#user-firstname').val();
+			$s.user.id = connect.userid;
+			$s.user.name = connect.userfname;
 			$s.socket = io();
 			c.initChat();
 		};
@@ -19,7 +19,7 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 			$('.chat-title').text($s.toPerson.firstname);
 			$('.chat-body').html('');
 			$('.chat-body').focus();
-			$s.socket.emit('chat private', {to: person, from: $s.user.id});
+			$s.socket.emit('chat private', {to: person, from: $s.user.id, peerid: connect.peerid});
 			$s.isChatDisable = false;
 		};
 
@@ -49,45 +49,74 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 			$s.body = "";
 			$s.bodyMessage = [];
 			$s.isChatDisable = true;
+			$s.peerConn = null;
 		};
 
 		// initiate chat
 		c.initChat = function() {
-			// Sends your information to the socket server
-			$s.socket.emit('chat join', {
-				id: $s.user.id,
-				firstname: $s.user.name
-			});
+			// wait till peer is open/done
+			peer.on('open', function(id) {
 
-			// Receive from socket that someone has join chat
-			$s.socket.on('chat join', function(people) {
-				$s.$apply(function() {
-					c.updateOnlines(people);
+				connect.peerid = id;
+				console.log('My peer ID is: ', connect);
+
+				// Sends your information to the socket server
+				$s.socket.emit('chat join', {
+					id: $s.user.id,
+					firstname: $s.user.name,
+					peerid: connect.peerid
 				});
-			});
 
-			// Receive from socket that someone has quit chat
-			$s.socket.on('chat leave', function(people) {
-				$s.$apply(function() {
-					c.updateOnlines(people);
+				// Receive from socket that someone has join chat
+				$s.socket.on('chat join', function(people) {
+					$s.$apply(function() {
+						c.updateOnlines(people);
+					});
 				});
-			});
 
-			$s.socket.on('chat sent', function(chat) {
-				$s.$apply(function() {
-					var isSender = $s.user.id === chat.from.id;
-					var message  = {
-						body: chat.body,
-						from: isSender ? '' : chat.from.name,
-						position: isSender ? 'right' : 'left',
-						date: Date.now()
-					};
-					$s.bodyMessage.push(message);
+				// Receive from socket that someone has quit chat
+				$s.socket.on('chat leave', function(people) {
+					$s.$apply(function() {
+						c.updateOnlines(people);
+					});
 				});
-			});
 
-			$s.socket.on('chat private', function(chat) {
-				c.chatroomid = chat.roomid;
+				$s.socket.on('chat disconnect', function() {
+					// $s.peerConn.disconnect();
+					console.log($s.peerConn);
+					$s.peerConn.close();
+					console.log('[SOCKET] chat disconnected');
+				});
+
+				$s.socket.on('chat sent', function(chat) {
+					$s.$apply(function() {
+						var isSender = $s.user.id === chat.from.id;
+						var message  = {
+							body: chat.body,
+							from: isSender ? '' : chat.from.name,
+							position: isSender ? 'right' : 'left',
+							date: Date.now(),
+							color: isSender ? 'blue' : 'gray'
+						};
+						$s.bodyMessage.push(message);
+						var chatHeight = $('#chat-conversation').offset().top + $('#chat-conversation-container').height();
+							$('#chat-conversation').stop().animate({ 
+						      scrollTop: chatHeight
+						  }, 'fast');
+						// }, 1000);
+					});
+				});
+
+				$s.socket.on('chat private', function(chat) {
+					c.chatroomid = chat.roomid;
+					// initiate peer connections
+					$s.peerConn = startPeerConnection(chat.to);
+				});
+
+				$s.socket.on('peer connected', function(peerid) {
+					console.log('[SOCKET] peer id has just connected: ' + peerid);
+					connect.toid = peerid;
+				});
 			});
 		};
 

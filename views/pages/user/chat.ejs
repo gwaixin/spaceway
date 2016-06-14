@@ -6,9 +6,9 @@
 			</div>
 			<div class="panel-body">
 				<div class="list-group" id="chat-online-list">
-				  <a href="javascript:void(0);" class="list-group-item online-chat"
-				  		ng-repeat="(key, person) in onlines" 
-				  		ng-click="choosePerson(person)">
+					<a href="javascript:void(0);" class="list-group-item online-chat"
+							ng-repeat="(key, person) in onlines" 
+							ng-click="choosePerson(person)">
 							{{person.firstname}}
 					</a>
 				</div>
@@ -20,21 +20,47 @@
 			<div class="panel-heading">
 				<span class="chat-title">Please choose some to send chat</span>
 				<div class="pull-right">
-					<a href="#" class='chat-video'>video</a> | 
+					<a href="#" class='chat-video'>hide camera</a> | 
 					<a href="#" class='chat-delete'>delete</a>
 				</div>
 			</div>
 			<div class="panel-body">
 				<div class="row">
-					<div style="height: 450px;" class="col-md-12 chat-conversation">
-						<div class='row' ng-repeat="(key, message) in bodyMessage">
-							<div class='col-md-1 {{message.position}}'>
-								<h4>{{message.from}}</h4>
+					<div class="col-md-12" style="">
+						<div class="well">
+							<div class="video-container">
+								<div class="row">
+									<div class="col-md-6">
+										<h4>my camera</h4>
+										<div id="mycamera-connect" class="connecting-video text-center">
+											<i class="fa fa-spinner fa-pulse fa-4x fa-fw"></i>
+											<p>connecting ..</p>
+										</div>
+										<video class="cam-chat" id="my-video" muted="true" autoplay></video>
+									</div>
+									<div class="col-md-6">
+										<h4>his/her camera</h4>
+										<div id="othercamera-connect" class="connecting-video text-center">
+											<i class="fa fa-spinner fa-pulse fa-4x fa-fw"></i>
+											<p>connecting ..</p>
+										</div>
+										<video class="cam-chat" id="their-video" autoplay></video>
+									</div>
+								</div>
 							</div>
-							<div class='col-md-10 pull-{{message.position}} text-{{message.position}}'> 
-								<div class="bubble">
-									<p>"{{message.body}}"</p>
-									<span>-</span> <small>{{message.date | date:'medium'}}</small>
+						</div>
+					</div>
+					<div id="chat-conversation" style="height: 450px;" class="col-md-12 chat-conversation">
+						<div id="chat-conversation-container">
+							<div class='row' ng-repeat="(key, message) in bodyMessage">
+								<div class='col-xs-12 col-sm-1 col-md-1 {{message.position}}'>
+									<h4>{{message.from}}</h4>
+								</div>
+								<div class='col-xs-12 col-sm-10 col-md-10 pull-{{message.position}} text-{{message.position}}'> 
+									<div class="bubble bubble-{{message.color}}">
+										<p>"{{message.body}}"</p>
+										<span>-</span> <small>{{message.date | date:'medium'}}</small>
+									</div>
 								</div>
 							</div>
 						</div>

@@ -8,11 +8,15 @@ chatRoute.get('/', function(req, res) {
 	var locals = processLocal('/user/chat', 'Chatting 2');
 	locals.confluid = true;
 	locals.js = [
+		'/js/socket.io/socket.io.js',
+		// '/skyway-peerjs-electron/dist/peer.js',
+		'/promise-js/promise.js',
+		'/peerjs/dist/peer.js',
+		'/js/pages/user/chat/connect.js',
 		'/js/ng/controller/chat.js',
-		'/js/socket.io/socket.io.js'
 	];
-	locals.user = req.session.authUser
-	res.render('base', locals)
+	locals.user = req.session.authUser;
+	res.render('base', locals);
 });
 
 chatRoute.post('/onlines', function(req, res) {
