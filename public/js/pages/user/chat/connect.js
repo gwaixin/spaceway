@@ -5,14 +5,15 @@ var connect = {
 	userfname: $('#user-firstname').val(),
 	toid: null,
 	video: {
+		stream: null,
 		mine: null,
 		other: null
 	}
 };
 
 var resetConnection = function() {
-	connect.toid = null;
-	connect.video = { mine: null, other: null};
+	// connect.toid = null;
+	connect.video = { stream: null, mine: null, other: null};
 };
 
 var peer = new Peer(connect.userid, {host: 'localhost', port: 3050, path: '/peerjs', debug: 2, secure:true});
@@ -46,7 +47,9 @@ peer.on('open', function(id) {
 
 peer.on('close', function() {
 	console.log('[PEER] on close');
-	peer.disconnect();
+	connect.video.other.close();
+	// connect.video.mine.close();
+	// peer.disconnect();
 });
 
 /**
@@ -55,29 +58,43 @@ peer.on('close', function() {
  * @return Class conn         Peer connection class
  */
 var startPeerConnection = function(connectTo) {
+	// if (connect.toid === connectTo) {
+	// 	console.log('[PEER] already connected to # ', connect.toid);
+	// 	return;
+	// } else if (connect.video.mine !== null) {
+	// 	console.log('[PEER] already has vc with someone else');
+	// }
+
 	var vh   = videoHandler();
 	var conn = peer.connect(connectTo);
 	connect.toid = connectTo;
+	connect.video.mine = conn;
 	console.log('[PEER] starts peer connection with: ', connectTo);
-
 	// 'When somebody is connected'
 	peer.on('connection', function(con) {
+		if (con.open) {
+			console.log('[PEER] connection is already open');
+		} else if (con.peer != connect.toid) {
+			console.log('[PEER] no connection for peerid: ' + con.peer);
+		} else {
+			if (conn.open === false) {
+				conn.open = true;
+			}
+			console.log('someone has connected', con);
+			
+			// client start its video and then start call the other video
+			vh.startMyvid().then(function(resolve) {
 
-		console.log('someone has connected', connectTo);
+				vh.startCallVid(resolve).then(function() {
+					console.log('[PEER] done calling to # ' + connect.toid);
+				}, function(reject) {
+					console.log(reject);
+				});
 
-		// client start its video and then start call the other video
-		vh.startMyvid().then(function(resolve) {
-
-			vh.startCallVid(resolve).then(function() {
-				console.log('[PEER] done calling to # ' + connect.toid);
 			}, function(reject) {
 				console.log(reject);
 			});
-
-		}, function(reject) {
-			console.log(reject);
-		});
-
+		}
 	});
 
 	// Receive messages
@@ -85,10 +102,14 @@ var startPeerConnection = function(connectTo) {
 		console.log('receive somehting');
 	});
 
-	conn.on('close', function(con) {
+	conn.on('close', function() {
+		if (connect.video.other !== null) {
+			connect.video.other.close();
+		}
 		console.log('[PEER-CON] peer connection on close');
-		connect.video.other.close();
-		vh.resetVids();
+		// peer.disconnect();
+		// connect.video.mine.close();
+		// vh.resetVids();
 	});
 
 	return conn;
@@ -108,7 +129,7 @@ var videoHandler = function() {
 	 */
 	vh.startMyvid = function() {
 		return new Promise(function(resolve, reject) {
-			if (connect.video.mine === null) {
+			if (connect.video.stream === null) {
 				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 				navigator.getUserMedia({audio: true, video: true}, function(stream) {
 					console.log('[PEER] setting up my video');
@@ -117,7 +138,7 @@ var videoHandler = function() {
 					$('#my-video').prop('src', URL.createObjectURL(stream));
 					
 					window.localStream = stream;
-					connect.video.mine = stream;
+					connect.video.stream = stream;
 					
 					$('#othercamera-connect').fadeIn('fast');
 					
@@ -143,7 +164,9 @@ var videoHandler = function() {
 		});
 
 		call.on('close', function() {
-			console.log('[PEER-MS] close');
+			console.log('[PEER-MS] close: ');
+			resetConnection();
+			vh.resetVids();
 		});
 		
 		call.on('error', function(error) {
@@ -167,7 +190,6 @@ var videoHandler = function() {
 
 
 	vh.resetVids = function(call) {
-		resetConnection();
 		$('#othercamera-connect').fadeIn('fast');
 		$('#mycamera-connect').fadeIn('fast');
 		$('#their-video').prop('src', '');

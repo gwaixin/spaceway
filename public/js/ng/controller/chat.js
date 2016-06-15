@@ -14,11 +14,19 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 
 		/* Upon choosing a person to chat */
 		$s.choosePerson = function(person) {
+			if ($s.toPerson == person) {
+				console.log('[ANGULAR] person has been already pick up');
+				return;
+			}
+			if (typeof $s.peerConn !== 'undefined' && $s.peerConn !== null) {
+				console.log('[ANGULAR] closing peer connection');
+				$s.peerConn.close();
+			}
 			$s.toPerson = person;
 			$s.bodyMessage = [];
 			$('.chat-title').text($s.toPerson.firstname);
 			$('.chat-body').html('');
-			$('.chat-body').focus();
+			// $('.chat-body').focus();
 			$s.socket.emit('chat private', {to: person, from: $s.user.id, peerid: connect.peerid});
 			$s.isChatDisable = false;
 		};
@@ -150,6 +158,18 @@ spacewayApp.controller('chat', ['$scope', '$rootScope',
 				});
 				event.preventDefault();
 			}
+		});
+	};
+}).directive('ngClickActive', function() {
+	return function(scope, element, attrs) {
+		// sets active to clicked person
+		if (scope.toPerson.userid === attrs.userid) {
+			element.addClass('active');
+		}
+		element.bind('click', function(event) {
+			$('.online-chat').removeClass('active');
+			element.addClass('active');
+			event.preventDefault();
 		});
 	};
 });
